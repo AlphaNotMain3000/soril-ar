@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>AR Test</title>
+</head>
+
+<body>
+
+  <button id="start">Start AR</button>
+  <div id="status"></div>
+
+  <script type="module">
+    import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
+    import { ARButton } from "https://unpkg.com/three@0.160.0/examples/jsm/webxr/ARButton.js";
+
+    const status = document.getElementById("status");
+
+    if (!navigator.xr) {
+      status.innerText = "WebXR NOT supported on this device/browser.";
+    } else {
+      status.innerText = "WebXR detected. Click button.";
+    }
+
+    let renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.xr.enabled = true;
+    document.body.appendChild(renderer.domElement);
+
+    document.getElementById("start").onclick = async () => {
+      if (!navigator.xr) {
+        alert("AR not supported here.");
+        return;
+      }
+
+      const supported = await navigator.xr.isSessionSupported("immersive-ar");
+
+      if (!supported) {
+        alert("AR session not supported on this device.");
+        return;
+      }
+
+      document.body.appendChild(
+        ARButton.createButton(renderer, { requiredFeatures: ["hit-test"] })
+      );
+    };
+  </script>
+
+</body>
+
+</html>
